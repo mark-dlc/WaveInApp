@@ -18,8 +18,7 @@ class VisualizerWrapper {
     private long lastZeroArrayTimestamp;
 
 	public VisualizerWrapper(@NonNull Context context, int audioSessionId, @NonNull final OnFftDataCaptureListener onFftDataCaptureListener) {
-        mediaPlayer = MediaPlayer.create(context, R.raw.av_workaround_1min);
-		visualizer = new Visualizer(audioSessionId);
+	visualizer = new Visualizer(audioSessionId);
         visualizer.setEnabled(false);
 		visualizer.setCaptureSize(Visualizer.getCaptureSizeRange()[1]);
         captureRate = Visualizer.getMaxCaptureRate();
@@ -54,7 +53,10 @@ class VisualizerWrapper {
         visualizer.setEnabled(false);
         visualizer.release();
         visualizer = null;
-        mediaPlayer.release();
+	
+	if (mediaPlayer != null)
+        	mediaPlayer.release();
+		
         mediaPlayer = null;
 	}
 
@@ -67,6 +69,10 @@ class VisualizerWrapper {
             visualizer.setDataCaptureListener(null, captureRate, false, false);
         }
         visualizer.setEnabled(true);
+	}
+	
+	public void setMediaPlayerFallback(int fallbackResourceId){
+	    mediaPlayer = MediaPlayer.create(context, fallbackResourceId);
 	}
 
 	public interface OnFftDataCaptureListener {
